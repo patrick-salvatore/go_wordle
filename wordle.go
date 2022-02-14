@@ -21,6 +21,8 @@ var SOLVED = false
 var ATTEMPTS = 5
 var ATTEMPTED = make([]AttemptedWord, 5)
 
+type Month int
+
 const SPACE = "  "
 
 const (
@@ -29,8 +31,45 @@ const (
 	WRONG
 )
 
+const (
+	January Month = 1 + iota
+	February
+	March
+	April
+	May
+	June
+	July
+	August
+	September
+	October
+	November
+	December
+)
+
+func padding(n int32) int32 {
+	var p int32 = 1
+	for p < n {
+		p *= 10
+	}
+	return p
+}
+
+func convert_time_to_i64(s time.Time) int64 {
+	var n int32
+
+	y := s.Year()
+	m := s.Month()
+	d := s.Day()
+
+	n = n*padding(int32(y)) + int32(y)
+	n = n*padding(int32(m)) + int32(m)
+	n = n*padding(int32(d)) + int32(d)
+
+	return int64(n)
+}
+
 func select_word() string {
-	rand.Seed(time.Now().UnixNano())
+	rand.Seed(convert_time_to_i64(time.Now()))
 	min := 0
 	max := len(Word_Set_1)
 	return Word_Set_2[rand.Intn(max-min)+min]
@@ -84,11 +123,14 @@ func main() {
 	var guess string
 
 	spacer := color.New(color.BgBlack)
-	fmt.Print("\n Welcome to a golang wordle clone in the terminal \n ")
+	c := exec.Command("clear")
+	c.Stdout = os.Stdout
+	c.Run()
 
+	fmt.Print("\n Welcome to a golang wordle clone in the terminal \n ")
 	for {
 		if ATTEMPTS == 0 {
-			fmt.Printf("Out of guesses, answer is %v \n", guess_word)
+			fmt.Printf(" Out of guesses, answer is %v \n", guess_word)
 			break
 		} else if SOLVED {
 			s, _ := unquoteCodePoint("\\U0001f389")

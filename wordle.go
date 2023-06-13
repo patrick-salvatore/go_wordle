@@ -10,6 +10,8 @@ import (
 	"time"
 
 	"github.com/fatih/color"
+
+	"github.com/patrick-salvatore/go_wordle/constants"
 )
 
 type AttemptedWord struct {
@@ -71,8 +73,8 @@ func convert_time_to_i64(s time.Time) int64 {
 func select_word() string {
 	rand.Seed(convert_time_to_i64(time.Now()))
 	min := 0
-	max := len(Word_Set_1)
-	return Word_Set_2[rand.Intn(max-min)+min]
+	max := len(constants.Word_Set_1)
+	return constants.Word_Set_2[rand.Intn(max-min)+min]
 }
 
 func print_empty_line(spacer *color.Color) {
@@ -115,7 +117,7 @@ func contains(s []string, str string) bool {
 
 func unquoteCodePoint(s string) (string, error) {
 	r, err := strconv.ParseInt(strings.TrimPrefix(s, "\\U"), 16, 32)
-	return string(r), err
+	return fmt.Sprint(r), err
 }
 
 func main() {
@@ -145,7 +147,7 @@ func main() {
 			fmt.Scan(&guess)
 			guess = strings.TrimRight(guess, " ")
 
-			if !contains(Word_Set_1, guess) && !contains(Word_Set_2, guess) {
+			if !contains(constants.Word_Set_1, guess) && !contains(constants.Word_Set_2, guess) {
 				s, _ := unquoteCodePoint("\\U274c")
 				fmt.Printf(" %s%s This is an invalid word %s%s \n\n", s, s, s, s)
 
